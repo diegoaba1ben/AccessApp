@@ -1,0 +1,70 @@
+# Archivos y carpetas de Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.vcxproj.user
+*.opendb
+*.obj
+*.exe
+*.pdb
+*.dll
+*.idb
+*.psess
+*.pdb
+*.ipdb
+*.opendb
+*.opensdf
+*.cachefile
+
+# Archivos y carpetas de Visual Studio Code
+.vscode/
+*.code-workspace
+
+# Archivos de build y publicación en .NET
+bin/
+obj/
+Debug/
+Release/
+Publish/
+*.csproj.user
+*.dll
+*.exe
+*.pdb
+*.log
+*.lock.json
+*.xml
+project.lock.json
+artifacts/
+
+# Configuración y bases de datos locales
+*.db
+*.sqlite3
+*.mdf
+*.ldf
+*.ndf
+
+# Node.js y npm
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Archivos de Docker
+*.dockerignore
+Dockerfile
+docker-compose*
+
+# Archivos de entorno y configuración sensible
+.env
+.env.*
+secrets.json
+
+# Archivos temporales y del sistema
+*.tmp
+*.bak
+*.swp
+*.DS_Store
+Thumbs.db
+~$*
