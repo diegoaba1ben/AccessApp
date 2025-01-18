@@ -1,0 +1,19 @@
+.
+|-- AccessAppUser
+|   |-- AccessAppUser.csproj
+|   |-- AccessAppUser.http
+|   |-- Application
+|   |-- Domain
+|   |-- Infrastructure
+|   |-- Presentation
+|   |-- Program.cs
+|   |-- Properties
+|   |-- Tests
+|   |-- appsettings.Development.json
+|   |-- appsettings.json
+|   |-- bin
+|   `-- obj
+|-- Backend.sln
+`-- estructura.txt
+
+9 directories, 7 files
