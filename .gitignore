@@ -1,0 +1,76 @@
+# Archivos y directorios de compilación
+bin/
+obj/
+**/bin/
+**/obj/
+
+# Archivos de usuario y configuración
+.vs/
+.vscode/
+*.user
+*.suo
+
+# Archivos generados por herramientas
+*.log
+*.lock
+*.tmp
+*.cache
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+#Exclusiones para .Net y ASP.NET
+appsettings.Development.json
+appsettings.Production.json
+appsettings.Staging.json
+
+# Archivos de entorno
+.env
+.env.local
+.env.*.local
+
+# Docker
+docker-compose.override.yml
+docker-data/
+docker/
+
+# Migraciones de EF Core
+Migrations/
+
+# Bases de datos locales y archivos relacionados
+*.mdf
+*.ldf
+*.sqlite
+*.db
+# Exclusiones para Razor
+.npm/
+.yarn7
+.pnp.*
+.vite/
+*.js.map
+*.css.map
+
+# Archivos y directorios generados en pruebas
+TestResults/
+.trx
+*.coverage
+*.coveragexml
+*.testhost.dll
+*.userprefs
+.coverage*
+
+# Herramientas de configuración específicos del entorno
+*.csproj.user
+*.csproj.DotSettings.user
+
+#Herramientas de prueba (xUnit)
+**/TestResults/
+.vtest/
+.vstestlog/
+*.vsmdi
+
+# Cobertura de código
+coverage.opencover.xml
+coverage.cobertura.xml
+
