@@ -1,4 +1,5 @@
 using System;
+using AccessAppUser.Domain.Entities;
 
 namespace AccessAppUser.Domain.Entities
 {
@@ -14,3 +15,4 @@ namespace AccessAppUser.Domain.Entities
         public Profile Profile { get; set; } = null!;
     }
 }
+
