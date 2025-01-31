@@ -1,4 +1,5 @@
 using System;
+using AccessAppUser.Infrastructure.Helpers;
 
 namespace AccessAppUser.Domain.Entities
 {
@@ -7,7 +8,7 @@ namespace AccessAppUser.Domain.Entities
     /// </summary>
     public class Permission
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = GuidProvider.NewGuid(); // Id único del permiso
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
     }
