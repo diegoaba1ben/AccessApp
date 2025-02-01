@@ -1,20 +1,23 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 using AccessAppUser.Infrastructure.Helpers;
 
 namespace AccessAppUser.Domain.Entities
 {
     /// <summary>
-    /// Entidad para gestionar cambios de contraseñas de usuarios.
+    /// Entidad para gestionar cambios de contraseï¿½as de usuarios.
     /// </summary>
     public class GesPass
     {
+        [Key] // Clave primaria
+        public Guid Id { get; set; } = Guid.NewGuid(); // Identificador ï¿½nico
         public Guid UserId { get; set; } = Guid.Empty; // Id del usuario asociado
-        public User User { get; set; } = null!; // Relación de navegación hacia User
+        public User User { get; set; } = null!; // Relaciï¿½n de navegaciï¿½n hacia User
 
-        public string ResetToken { get; set; } = string.Empty; // Token para resetear la contraseña
-        public DateTime TokenExpiration { get; set; } // Fecha de expiración del token
-        public bool IsCompleted { get; set; } // Indica si el cambio de contraseña fue completado
-        public DateTime? CompletedAt { get; set; } // Fecha de completado para auditoría
+        public string ResetToken { get; set; } = string.Empty; // Token para resetear la contraseï¿½a
+        public DateTime TokenExpiration { get; set; } // Fecha de expiraciï¿½n del token
+        public bool IsCompleted { get; set; } // Indica si el cambio de contraseï¿½a fue completado
+        public DateTime? CompletedAt { get; set; } // Fecha de completado para auditorï¿½a
 
         /// <summary>
         /// Asocia un usuario y deriva el UserId.

@@ -17,6 +17,7 @@ namespace AccessAppUser.Infrastructure.Persistence
         public DbSet<Area> Areas { get; set; } = null!;
         public DbSet<Profile> Profiles { get; set; } = null!;
         public DbSet<AreaProfile> AreaProfiles { get; set; } = null!;
+        public DbSet<GesPass> GesPasses { get; set; } = null!; // Agregado correctamente
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -41,21 +42,27 @@ namespace AccessAppUser.Infrastructure.Persistence
                 .HasOne(ap => ap.Profile)
                 .WithMany(p => p.AreaProfiles)
                 .HasForeignKey(ap => ap.ProfileId);
+
             // Cambio de contraseñas
+            modelBuilder.Entity<GesPass>()
+                .HasKey(gp => gp.Id); 
+
             modelBuilder.Entity<GesPass>()
                 .HasOne(gp => gp.User)
                 .WithOne(u => u.GesPass)
-                .HasForeignKey<GesPass>(gp => gp.UserId);
+                .HasForeignKey<GesPass>(gp => gp.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<GesPass>()
                 .Property(gp => gp.ResetToken)
                 .HasMaxLength(20)
                 .IsRequired();
+
             modelBuilder.Entity<GesPass>()
                 .Property(gp => gp.TokenExpiration)
                 .IsRequired();
 
-            // Otras configuraciones personalizadas (opcional)
-            // Ejemplo: Longitud de cadenas
+            // Otras configuraciones personalizadas
             modelBuilder.Entity<User>()
                 .Property(u => u.Email)
                 .HasMaxLength(150)

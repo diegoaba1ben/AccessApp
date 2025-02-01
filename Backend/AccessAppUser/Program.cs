@@ -1,6 +1,6 @@
 using AccessAppUser.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using DotNetEnv; // Para cargar variables de entorno
+using DotNetEnv;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -11,23 +11,18 @@ var builder = WebApplication.CreateBuilder(args);
 // Cargar variables de entorno desde .env
 Env.Load();
 
-// Construcción de la cadena de conexión usando variables de entorno
-var connectionString = $"Server={DotNetEnv.Env.GetString("DB_HOST")};" +
-                       $"Port={DotNetEnv.Env.GetString("DB_PORT")};" +
-                       $"User={DotNetEnv.Env.GetString("DB_USER")};" +
-                       $"Password={DotNetEnv.Env.GetString("DB_PASSWORD")};" +
-                       $"Database={DotNetEnv.Env.GetString("DB_NAME")};";
+// Obtener configuración con valores predeterminados en caso de error
+var dbHost = DotNetEnv.Env.GetString("DB_HOST", "localhost");
+var dbPort = DotNetEnv.Env.GetString("DB_PORT", "3306");
+var dbUser = DotNetEnv.Env.GetString("DB_USER", "root");
+var dbPassword = DotNetEnv.Env.GetString("DB_PASSWORD", "");
+var dbName = DotNetEnv.Env.GetString("DB_NAME", "AccessAppDb");
 
-// Configurar el DbContext con MySQL
+var connectionString = $"Server={dbHost};Port={dbPort};User={dbUser};Password={dbPassword};Database={dbName};";
+
 builder.Services.AddDbContext<AppDbContext>(options =>
-{
-    options.UseMySql(
-        connectionString,
-        new MySqlServerVersion(new Version(8, 0, 405)) // Versión compatible con MySQL
-    );
-});
+    options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 405))));
 
-// Habilitar CORS para el frontend
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -44,10 +39,10 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Aplicar middleware de CORS
+// Aplicar CORS
 app.UseCors("AllowAll");
 
-// Verifica la existencia de la base de datos
+// Verificar la existencia de la base de datos
 EnsureDatabaseCreated(app);
 
 void EnsureDatabaseCreated(WebApplication app)
@@ -60,16 +55,16 @@ void EnsureDatabaseCreated(WebApplication app)
         {
             if (context.Database.EnsureCreated())
             {
-                logger.LogInformation(" Base de datos creada exitosamente.");
+                logger.LogInformation("Base de datos creada exitosamente.");
             }
             else
             {
-                logger.LogInformation(" La base de datos ya existe.");
+                logger.LogInformation("La base de datos ya existe.");
             }
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, " Error al verificar la base de datos.");
+            logger.LogError(ex, "Error al verificar la base de datos.");
             throw;
         }
     }
