@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 Env.Load();
 
 // Obtener configuración con valores predeterminados en caso de error
-var dbHost = DotNetEnv.Env.GetString("DB_HOST", "localhost");
+var dbHost = DotNetEnv.Env.GetString("DB_HOST", Environment.GetEnvironmentVariable("DB_HOST") ?? "localhost");
 var dbPort = DotNetEnv.Env.GetString("DB_PORT", "3306");
 var dbUser = DotNetEnv.Env.GetString("DB_USER", "root");
 var dbPassword = DotNetEnv.Env.GetString("DB_PASSWORD", "");
@@ -80,5 +80,3 @@ if (app.Environment.IsDevelopment())
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
-
-

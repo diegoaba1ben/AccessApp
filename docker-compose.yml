@@ -1,0 +1,35 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_accessappdb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mysql_accessappdb
+    ports: 
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  accessappuser:
+    build:
+      context: .
+      dockerfile: Backend/AccessAppUser/Dockerfile
+    container_name: accessappuser_api
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_NAME: AccessAppDb
+    ports:
+      - "5000:80"
+    depends_on:
+      - mysql
+    volumes:
+      - ./Backend/AccessAppUser:/app
+
+volumes:
+  mysql_data:
+
+
