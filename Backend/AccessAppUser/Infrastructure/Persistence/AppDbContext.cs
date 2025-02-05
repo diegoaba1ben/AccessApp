@@ -27,7 +27,8 @@ namespace AccessAppUser.Infrastructure.Persistence
             modelBuilder.Entity<Profile>()
                 .HasOne(p => p.User)
                 .WithOne(u => u.Profile)
-                .HasForeignKey<Profile>(p => p.Id);
+                .HasForeignKey<Profile>(p => p.Id)
+                .OnDelete(DeleteBehavior.Cascade);            
 
             // Configuración de la tabla intermedia AreaProfile
             modelBuilder.Entity<AreaProfile>()
@@ -42,6 +43,16 @@ namespace AccessAppUser.Infrastructure.Persistence
                 .HasOne(ap => ap.Profile)
                 .WithMany(p => p.AreaProfiles)
                 .HasForeignKey(ap => ap.ProfileId);
+
+            modelBuilder.Entity<Role>()
+                .HasMany(r => r.Areas)
+                .WithMany(a => a.Roles)
+                .UsingEntity(j => j.ToTable("RoleArea"));
+
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Roles)
+                .WithMany(r => r.Users)
+                .UsingEntity(j => j.ToTable("UserRole"));
 
             // Cambio de contraseñas
             modelBuilder.Entity<GesPass>()
