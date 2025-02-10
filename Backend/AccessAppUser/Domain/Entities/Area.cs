@@ -10,10 +10,9 @@ namespace AccessAppUser.Domain.Entities
     {
         public Guid Id { get; private set; }
         public string Name { get; private set; } = string.Empty;
-
         public string Description { get; private set; } = string.Empty;
-        public List<Role> Roles { get; private set; } = new();
 
+        public List<Role> Roles { get; private set; } = new();
         public List<AreaProfile> AreaProfiles { get; private set; } = new();
 
         /// <summary>
@@ -50,8 +49,6 @@ namespace AccessAppUser.Domain.Entities
             /// <summary>
             /// Establece el nombre del área.
             /// </summary>
-            /// <param name="name">Nombre del área.</param>
-            /// <returns>Instancia de <see cref="AreaBuilder"/> para encadenamiento.</returns>
             public AreaBuilder SetName(string name)
             {
                 _area.Name = name;
@@ -61,8 +58,6 @@ namespace AccessAppUser.Domain.Entities
             /// <summary>
             /// Establece la descripción del área.
             /// </summary>
-            /// <param name="description">Descripción del área.</param>
-            /// <returns>Instancia de <see cref="AreaBuilder"/> para encadenamiento.</returns>
             public AreaBuilder SetDescription(string description)
             {
                 _area.Description = description;
@@ -72,8 +67,6 @@ namespace AccessAppUser.Domain.Entities
             /// <summary>
             /// Agrega un rol a la lista de roles del área.
             /// </summary>
-            /// <param name="role">Rol a agregar.</param>
-            /// <returns>Instancia de <see cref="AreaBuilder"/> para encadenamiento.</returns>
             public AreaBuilder AddRole(Role role)
             {
                 _area.Roles.Add(role);
@@ -83,30 +76,29 @@ namespace AccessAppUser.Domain.Entities
             /// <summary>
             /// Agrega múltiples roles a la lista de roles del área.
             /// </summary>
-            /// <param name="roles">Lista de roles a agregar.</param>
-            /// <returns>Instancia de <see cref="AreaBuilder"/> para encadenamiento.</returns>
             public AreaBuilder AddRoles(IEnumerable<Role> roles)
             {
                 _area.Roles = roles?.ToList() ?? new List<Role>(); // Permite listas vacías
                 return this;
             }
 
-
             /// <summary>
             /// Asocia un perfil al área mediante la tabla intermedia <see cref="AreaProfile"/>.
             /// </summary>
-            /// <param name="profile">Perfil a asociar.</param>
-            /// <returns>Instancia de <see cref="AreaBuilder"/> para encadenamiento.</returns>
             public AreaBuilder AddProfile(Profile profile)
             {
-                _area.AreaProfiles.Add(new AreaProfile { Area = _area, Profile = profile });
+                _area.AreaProfiles.Add(
+                    AreaProfile.Builder() // Usamos el Builder en lugar de instanciarlo directamente.
+                        .WithArea(_area)
+                        .WithProfile(profile)
+                        .Build()
+                );
                 return this;
             }
 
             /// <summary>
             /// Finaliza la construcción del objeto <see cref="Area"/>.
             /// </summary>
-            /// <returns>Instancia construida de <see cref="Area"/>.</returns>
             public Area Build() => _area;
         }
     }

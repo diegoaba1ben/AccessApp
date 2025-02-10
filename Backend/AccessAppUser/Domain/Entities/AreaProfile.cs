@@ -10,34 +10,13 @@ namespace AccessAppUser.Domain.Entities
         public Guid AreaId { get; private set; }
         public Guid ProfileId { get; private set; }
 
-        // Cambiar internal a public para que sea accesible desde otros lugares
-        public Area Area { get; internal set; } = null!;
-        public Profile Profile { get; internal set; } = null!;
+        public Area Area { get; private set; } = null!;
+        public Profile Profile { get; private set; } = null!;
 
         /// <summary>
         /// Constructor privado para evitar instanciación directa.
         /// </summary>
-        public AreaProfile() { }
-
-        /// <summary>
-        /// Método para asignar un área a esta relación.
-        /// </summary>
-        public void SetArea(Area area)
-        {
-            if (area == null) throw new ArgumentNullException(nameof(area));
-            Area = area;
-            AreaId = area.Id;
-        }
-
-        /// <summary>
-        /// Método para asignar un perfil a esta relación.
-        /// </summary>
-        public void SetProfile(Profile profile)
-        {
-            if (profile == null) throw new ArgumentNullException(nameof(profile));
-            Profile = profile;
-            ProfileId = profile.Id;
-        }
+        private AreaProfile() { }
 
         /// <summary>
         /// Inicializa el builder interno.
@@ -64,7 +43,9 @@ namespace AccessAppUser.Domain.Entities
             /// </summary>
             public AreaProfileBuilder WithArea(Area area)
             {
-                _areaProfile.SetArea(area);
+                if (area == null) throw new ArgumentNullException(nameof(area), "El área no puede ser nula.");
+                _areaProfile.Area = area;
+                _areaProfile.AreaId = area.Id;
                 return this;
             }
 
@@ -73,13 +54,16 @@ namespace AccessAppUser.Domain.Entities
             /// </summary>
             public AreaProfileBuilder WithProfile(Profile profile)
             {
-                _areaProfile.SetProfile(profile);
+                if (profile == null) throw new ArgumentNullException(nameof(profile), "El perfil no puede ser nulo.");
+                _areaProfile.Profile = profile;
+                _areaProfile.ProfileId = profile.Id;
                 return this;
             }
 
+            /// <summary>
+            /// Finaliza la construcción del objeto <see cref="AreaProfile"/>.
+            /// </summary>
             public AreaProfile Build() => _areaProfile;
         }
     }
 }
-
-
