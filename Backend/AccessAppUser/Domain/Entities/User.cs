@@ -14,6 +14,7 @@ namespace AccessAppUser.Domain.Entities
         public string Email { get; private set; } = string.Empty;
         public string Password { get; private set; } = string.Empty;
         public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
+        public static bool IsSystemInitialized { get; private set; } = false;
 
         // Relaciones
         public Profile Profile { get; private set; } = null!;
@@ -74,12 +75,16 @@ namespace AccessAppUser.Domain.Entities
 
             public UserBuilder WithRoles(IEnumerable<Role> roles)
             {
-                if(roles == null || !roles.Any())
+                if (!User.IsSystemInitialized && (roles == null || !roles.Any()))
                 {
-                    throw new ArgumentException("User must have at least one role.");
+                    // Si es el primer usuario, se le asigna el rol de Administrador
+                    roles = new List<Role> {Role.Builder().SetName("Admin").SetDescription("Rol inicial del sistema.").Build()};
                 }
-                _user.Roles ??= new List<Role>();
-                _user.Roles.AddRange(roles);
+                else if (roles == null || !roles.Any())
+                {
+                    throw new ArgumentException("El usuario debe tener al menos un rol.");
+                }
+                _user.Roles = new List<Role>(roles);
                 return this;
             }
 
@@ -89,7 +94,14 @@ namespace AccessAppUser.Domain.Entities
                 return this;
             }
 
-            public User Build() => _user;
+            public User Build()
+            {
+                if (!User.IsSystemInitialized)
+                {
+                    User.IsSystemInitialized = true; // Se marca el sistema como inicializado  
+                }
+                return _user;
+            } 
         }
     }
 }

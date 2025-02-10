@@ -25,7 +25,7 @@ namespace AccessAppUser.Domain.Entities
         /// Inicia la construcción de un nuevo objeto <see cref="Area"/>.
         /// </summary>
         /// <returns>Instancia de <see cref="AreaBuilder"/> para construir el área.</returns>
-        public static AreaBuilder Create() => new AreaBuilder();
+        public static AreaBuilder Builder() => new AreaBuilder();
 
         /// <summary>
         /// Clase interna que implementa el patrón Builder para la entidad <see cref="Area"/>.
@@ -87,11 +87,10 @@ namespace AccessAppUser.Domain.Entities
             /// <returns>Instancia de <see cref="AreaBuilder"/> para encadenamiento.</returns>
             public AreaBuilder AddRoles(IEnumerable<Role> roles)
             {
-                if(roles == null || !roles.Any())
-                    throw new ArgumentException("La lista de roles no puede ser nula o vacía.");
-                _area.Roles.AddRange(roles);
+                _area.Roles = roles?.ToList() ?? new List<Role>(); // Permite listas vacías
                 return this;
             }
+
 
             /// <summary>
             /// Asocia un perfil al área mediante la tabla intermedia <see cref="AreaProfile"/>.
@@ -112,4 +111,3 @@ namespace AccessAppUser.Domain.Entities
         }
     }
 }
-

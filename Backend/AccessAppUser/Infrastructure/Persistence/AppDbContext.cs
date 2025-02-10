@@ -23,14 +23,14 @@ namespace AccessAppUser.Infrastructure.Persistence
         {
             base.OnModelCreating(modelBuilder);
 
-            // Configuración de UserProfile
+            // Configuración de UserProfile uno a uno
             modelBuilder.Entity<Profile>()
                 .HasOne(p => p.User)
                 .WithOne(u => u.Profile)
                 .HasForeignKey<Profile>(p => p.Id)
                 .OnDelete(DeleteBehavior.Cascade);            
 
-            // Configuración de la tabla intermedia AreaProfile
+            // Configuración de la tabla intermedia AreaProfile muchos a muchos
             modelBuilder.Entity<AreaProfile>()
                 .HasKey(ap => new { ap.AreaId, ap.ProfileId }); //Llave compuesta
 
@@ -44,17 +44,25 @@ namespace AccessAppUser.Infrastructure.Persistence
                 .WithMany(p => p.AreaProfiles)
                 .HasForeignKey(ap => ap.ProfileId);
 
+            // Relaciones muchos a muchos entre Rol y Area
             modelBuilder.Entity<Role>()
                 .HasMany(r => r.Areas)
                 .WithMany(a => a.Roles)
                 .UsingEntity(j => j.ToTable("RoleArea"));
 
+            // Relación muchos a muchos entre User y Role
             modelBuilder.Entity<User>()
                 .HasMany(u => u.Roles)
                 .WithMany(r => r.Users)
                 .UsingEntity(j => j.ToTable("UserRole"));
 
-            // Cambio de contraseñas
+            // Relaciones muchos a muchos entre Role y Permission
+            modelBuilder.Entity<Role>()
+                .HasMany(r => r.Permissions)
+                .WithMany()
+                .UsingEntity(j => j.ToTable("RolePermission")); // Tabla intermedia
+
+            // Relación uno a uno entre User y GesPass para cambio de contraseña
             modelBuilder.Entity<GesPass>()
                 .HasKey(gp => gp.Id); 
 

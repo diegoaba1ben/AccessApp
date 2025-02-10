@@ -9,7 +9,7 @@ namespace AccessAppUser.Application.Builders
 
         public AreaBuilderExternal()
         {
-            _builder = Area.Create(); 
+            _builder = Area.Builder(); 
         }
 
         public AreaBuilderExternal WithName(string name)

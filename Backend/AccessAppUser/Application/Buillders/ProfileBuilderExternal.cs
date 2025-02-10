@@ -14,7 +14,11 @@ namespace AccessAppUser.Application.Builders
 
         public ProfileBuilderExternal WithUser(User user)
         {
-            _builder.WithUser(user); 
+           if(user == null)
+           {
+                throw new ArgumentNullException(nameof(user), "El usuario no puede ser nulo.");
+           }
+           _builder.WithUser(user); 
             return this;
         }
 

@@ -22,8 +22,12 @@ namespace AccessAppUser.Application.Validators
         private const string PasswordLengthMsg = "La contraseña debe tener entre 8 y 20 caracteres.";
         private const string PasswordFormatMsg = "La contraseña debe contener al menos una mayúscula, una minúscula, un número y un carácter especial.";
 
+        private const string RolesRequiredMsg = "El usuario debe tener al menos un rol asignado.";
+        private const string RolesRequiredForInitializedMsg = "El usuario debe tener al menos un rol asignado después de la inicialización del sistema.";
+
         public UserValidator()
         {
+            // Validación del Nombre
             RuleFor(user => user.Name)
                 .Custom((name, context) =>
                 {
@@ -46,6 +50,7 @@ namespace AccessAppUser.Application.Validators
                     }
                 });
 
+            // Validación del Correo Electrónico
             RuleFor(user => user.Email)
                 .Custom((email, context) =>
                 {
@@ -68,6 +73,7 @@ namespace AccessAppUser.Application.Validators
                     }
                 });
 
+            // Validación de la Contraseña
             RuleFor(user => user.Password)
                 .Custom((password, context) =>
                 {
@@ -87,8 +93,11 @@ namespace AccessAppUser.Application.Validators
                         context.AddFailure(PasswordFormatMsg);
                     }
                 });
+
+            // Validación de Roles
+            RuleFor(user => user.Roles)
+                .Must((user, roles) => roles != null && (roles.Count > 0 || !User.IsSystemInitialized))
+                .WithMessage(user => User.IsSystemInitialized ? RolesRequiredForInitializedMsg : RolesRequiredMsg);
         }
     }
 }
-
-

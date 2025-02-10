@@ -41,20 +41,28 @@ namespace AccessAppUser.Domain.Entities
 
             public ProfileBuilder WithUser(User user)
             {
+                if (user == null)
+                    throw new ArgumentNullException(nameof(user), "Cada perfil debe estar asociado a un usuario.");
+
                 _profile.User = user;
                 _profile.Id = user.Id; // Aseguramos que el ID de Profile viene de User
                 return this;
             }
 
             public ProfileBuilder WithRole(Role role)
-            {
+            {   if(role == null)
+                    throw new ArgumentNullException(nameof(role), "Cada perfil debe tener un rol asociado.");
+
                 _profile.Role = role;
                 return this;
             }
 
             public ProfileBuilder WithAreaProfiles(List<AreaProfile> areaProfiles)
             {
-                _profile.AreaProfiles = areaProfiles ?? new List<AreaProfile>();
+                if(areaProfiles == null || areaProfiles.Count == 0)
+                    throw new ArgumentNullException(nameof(areaProfiles), "El perfil debe estr vinculado a por lo menos un área.");
+
+                _profile.AreaProfiles = areaProfiles;
                 return this;
             }
 

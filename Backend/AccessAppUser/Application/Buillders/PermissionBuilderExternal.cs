@@ -23,6 +23,7 @@ namespace AccessAppUser.Application.Builders
             return this;
         }
 
-        public Permission Build() => _builder.Build();
+        public Permission Build() => _builder.Build(); 
     }
 }
+

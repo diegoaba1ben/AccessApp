@@ -15,9 +15,9 @@ namespace AccessAppUser.Application.Validators
                 .NotEmpty().WithMessage("El ID del perfil es obligatorio.");
 
             // Validación de la fecha de creación
-            RuleFor(profile => profile.CreatedAt)
+            RuleFor(profile => profile.CreatedAt.Date)
                 .NotEmpty().WithMessage("La fecha de creación es obligatoria.")
-                .LessThanOrEqualTo(DateTime.UtcNow).WithMessage("La fecha de creación no puede ser en el futuro.");
+                .LessThanOrEqualTo(DateTime.UtcNow.Date).WithMessage("Verifique la fecha de creación.");
 
             // Validación de la relación con User
             RuleFor(profile => profile.User)

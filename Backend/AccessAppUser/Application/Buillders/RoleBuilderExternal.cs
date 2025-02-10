@@ -9,7 +9,7 @@ namespace AccessAppUser.Application.Builders
 
         public RoleBuilderExternal()
         {
-            _builder = Role.Create(); 
+            _builder = Role.Builder(); 
         }
 
         public RoleBuilderExternal WithName(string name)

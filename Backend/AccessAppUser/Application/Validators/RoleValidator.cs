@@ -16,8 +16,7 @@ namespace AccessAppUser.Application.Validators
                 .Length(5, 100).WithMessage("La descripción debe tener entre 5 y 100 caracteres.");
 
             // Validaciones de Relaciones
-            RuleFor(role => role).SetValidator(new RoleRelationshipValidator());
+            //RuleFor(role => role).SetValidator(new RoleRelationshipValidator());
         }
     }
 }
-

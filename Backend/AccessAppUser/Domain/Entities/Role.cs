@@ -38,7 +38,7 @@ namespace AccessAppUser.Domain.Entities
         /// Inicia la construcción de un nuevo objeto <see cref="Role"/>.
         /// </summary>
         /// <returns>Instancia de <see cref="RoleBuilder"/> para construir el rol.</returns>
-        public static RoleBuilder Create() => new RoleBuilder();
+        public static RoleBuilder Builder() => new RoleBuilder();
 
         /// <summary>
         /// Clase interna que implementa el patrón Builder para la entidad <see cref="Role"/>.
