@@ -1,10 +1,8 @@
 using AccessAppUser.Infrastructure.Persistence;
+using AccessAppUser.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using DotNetEnv;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using AccessAppUser.Infrastructure.Repositories.Base;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +34,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 
 var app = builder.Build();
 

@@ -70,4 +70,3 @@ namespace AccessAppUser.Domain.Entities
         }
     }
 }
-
