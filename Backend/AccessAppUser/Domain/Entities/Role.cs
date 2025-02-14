@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using AccessAppUser.Domain.Builders;
 
 namespace AccessAppUser.Domain.Entities
 {
@@ -30,6 +31,11 @@ namespace AccessAppUser.Domain.Entities
         public List<User> Users { get; private set; } = new();
 
         /// <summary>
+        /// Lista intermedia para gestionar la relación con Permisos
+        /// </summary>
+        public List<RolePermission> RolePermissions { get; private set; } = new();
+
+        /// <summary>
         /// Constructor privado para restringir la creación directa de instancias.
         /// </summary>
         private Role() { }
@@ -55,48 +61,28 @@ namespace AccessAppUser.Domain.Entities
                 _role = new Role
                 {
                     Id = Guid.NewGuid(),
-                    Permissions = new List<Permission>() // Asegura que la lista nunca sea nula
+                    Permissions = new List<Permission>()
                 };
             }
 
-            /// <summary>
-            /// Establece el nombre del rol.
-            /// </summary>
-            /// <param name="name">Nombre del rol.</param>
-            /// <returns>Instancia de <see cref="RoleBuilder"/> para encadenamiento.</returns>
             public RoleBuilder SetName(string name)
             {
                 _role.Name = name;
                 return this;
             }
 
-            /// <summary>
-            /// Establece la descripción del rol.
-            /// </summary>
-            /// <param name="description">Descripción del rol.</param>
-            /// <returns>Instancia de <see cref="RoleBuilder"/> para encadenamiento.</returns>
             public RoleBuilder SetDescription(string description)
             {
                 _role.Description = description;
                 return this;
             }
 
-            /// <summary>
-            /// Agrega un permiso a la lista de permisos del rol.
-            /// </summary>
-            /// <param name="permission">Permiso a agregar.</param>
-            /// <returns>Instancia de <see cref="RoleBuilder"/> para encadenamiento.</returns>
             public RoleBuilder AddPermission(Permission permission)
             {
                 _role.Permissions.Add(permission);
                 return this;
             }
 
-            /// <summary>
-            /// Agrega una colección de permisos a la lista de permisos del rol.
-            /// </summary>
-            /// <param name="permissions">Lista de permisos a agregar.</param>
-            /// <returns>Instancia de <see cref="RoleBuilder"/> para encadenamiento.</returns>
             public RoleBuilder AddPermissions(IEnumerable<Permission> permissions)
             {
                 _role.Permissions.AddRange(permissions);
@@ -104,31 +90,31 @@ namespace AccessAppUser.Domain.Entities
             }
 
             /// <summary>
-            /// Agrega una colección de áreas a la lista de áreas asociadas al rol.
+            /// Agrega una relación específica con un permiso utilizando la clase intermedia.
             /// </summary>
-            /// <param name="areas">Lista de permisos a agregar.</param>
-            /// <returns>Instancia de <see cref="RoleBuilder"/> para encadenamiento.</returns>
+            public RoleBuilder AddRolePermission(Permission permission)
+            {
+                var rolePermission = new RolePermissionBuilder()
+                    .WithRole(_role)
+                    .WithPermission(permission)
+                    .Build();
+
+                _role.RolePermissions.Add(rolePermission);
+                return this;
+            }
+
             public RoleBuilder AddAreas(IEnumerable<Area> areas)
             {
                 _role.Areas.AddRange(areas);
                 return this;
             }
 
-            /// <summary>
-            /// Agrega una colección de usuarios a la lista de usuarios asociados al rol.
-            /// </summary>
-            /// <param name="users">Lista de permisos a agregar.</param>
-            /// <returns>Instancia de <see cref="RoleBuilder"/> para encadenamiento.</returns>
             public RoleBuilder AddUsers(IEnumerable<User> users)
             {
                 _role.Users.AddRange(users);
                 return this;
             }
 
-            /// <summary>
-            /// Finaliza la construcción del objeto <see cref="Role"/>.
-            /// </summary>
-            /// <returns>Instancia construida de <see cref="Role"/>.</returns>
             public Role Build() => _role;
         }
     }

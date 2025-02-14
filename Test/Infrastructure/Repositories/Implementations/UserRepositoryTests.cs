@@ -52,6 +52,24 @@ namespace AccessAppUser.Tests.Infrastructure.Repositories.Implementations
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
         }
+        [Fact]
+        public async Task AddAsync_Should_Set_User_Active_By_Defoult()
+        {
+            // Arrange
+            var newUser = User.Builder()
+                .WithName("Test User")
+                .WithEmail(Tests.user@example.com)
+                .WithPassword("SecurePass123")
+                .Build()
+
+            // Act
+            await _repository.AddAsync(newUser);
+            var retrievedUser = await _repository.GetByIdAsync(newUser.Id);
+
+            // Assert
+            Assert.NotNull(retrievedUser);
+            Assert.True(retrievedUser.IsActive);
+        }
 
         [Fact]
         public async Task AddAsync_Should_Add_User()

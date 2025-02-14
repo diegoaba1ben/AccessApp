@@ -56,11 +56,26 @@ namespace AccessAppUser.Infrastructure.Persistence
                 .WithMany(r => r.Users)
                 .UsingEntity(j => j.ToTable("UserRole"));
 
-            // Relaciones muchos a muchos entre Role y Permission
-            modelBuilder.Entity<Role>()
-                .HasMany(r => r.Permissions)
-                .WithMany()
-                .UsingEntity(j => j.ToTable("RolePermission")); // Tabla intermedia
+            modelBuilder.Entity<User>()
+                .Property(u =>u.IsActive)
+                .HasDefaultValue(true)
+                .IsRequired();
+
+            // Configuración de la tabla intermedia RolePermission
+            modelBuilder.Entity<RolePermission>()
+                .HasKey(rp => new { rp.RoleId, rp.PermissionId });
+
+            modelBuilder.Entity<RolePermission>()
+                .HasOne(rp => rp.Role)
+                .WithMany(r => r.RolePermissions)
+                .HasForeignKey(rp => rp.RoleId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<RolePermission>()
+                .HasOne(rp => rp.Permission)
+                .WithMany(p => p.RolePermissions)
+                .HasForeignKey(rp => rp.PermissionId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Relación uno a uno entre User y GesPass para cambio de contraseña
             modelBuilder.Entity<GesPass>()
@@ -81,7 +96,7 @@ namespace AccessAppUser.Infrastructure.Persistence
                 .Property(gp => gp.TokenExpiration)
                 .IsRequired();
 
-            // Otras configuraciones personalizadas
+            // Otras configuraciones adicionales personalizadas
             modelBuilder.Entity<User>()
                 .Property(u => u.Email)
                 .HasMaxLength(150)
@@ -90,6 +105,21 @@ namespace AccessAppUser.Infrastructure.Persistence
             modelBuilder.Entity<Role>()
                 .Property(r => r.Name)
                 .HasMaxLength(50)
+                .IsRequired();
+
+            modelBuilder.Entity<Permission>()
+                .Property(p => p.Name)
+                .HasMaxLength(50)
+                .IsRequired();
+
+            modelBuilder.Entity<Area>()
+                .Property(a => a.Name)
+                .HasMaxLength(100)
+                .IsRequired();
+
+            modelBuilder.Entity<GesPass>()
+                .Property(gp => gp.ResetToken)
+                .HasMaxLength(20)
                 .IsRequired();
         }
     }

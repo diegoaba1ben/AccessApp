@@ -15,6 +15,7 @@ namespace AccessAppUser.Domain.Entities
         public string Password { get; private set; } = string.Empty;
         public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
         public static bool IsSystemInitialized { get; private set; } = false;
+        public bool IsActive {get; private set;} = true;
 
         // Relaciones
         public Profile Profile { get; private set; } = null!;
@@ -64,6 +65,11 @@ namespace AccessAppUser.Domain.Entities
             public UserBuilder CreatedAt(DateTime createdAt)
             {
                 _user.CreatedAt = createdAt;
+                return this;
+            }
+            public UserBuilder WithIsActive(bool isActive)
+            {
+                _user.IsActive = isActive;
                 return this;
             }
 

@@ -3,6 +3,10 @@ using AccessAppUser.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using DotNetEnv;
 using AccessAppUser.Infrastructure.Repositories.Base;
+using AccessAppUser.Infrastructure.Repositories.Implementations;
+using AccessAppuser.Infrastruture.Repositories.Interfaces;
+using AccessAppUser.Infrastructure.Queries.Interfaces;
+using AccessAppUser.Infrastructure.Queries.Implementations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,7 +38,21 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Registro de repositorio genérico
 builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+
+// Registro de repositorios especializados
+builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddScoped<IAreaRepository, AreaRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IProfileRepository, ProfileRepository>();
+builder.Services.AddScoped<IGesPassRepository, GesPassRepository>();
+
+// Resgistro de consultas
+builder.Services.AddScoped<IProfileQueries, ProfileQueries>();
+builder.Services.AddScoped<IUserQueries, UserQueries>();
 
 var app = builder.Build();
 
