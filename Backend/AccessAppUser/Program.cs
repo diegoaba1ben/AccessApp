@@ -7,6 +7,7 @@ using AccessAppUser.Infrastructure.Repositories.Implementations;
 using AccessAppuser.Infrastruture.Repositories.Interfaces;
 using AccessAppUser.Infrastructure.Queries.Interfaces;
 using AccessAppUser.Infrastructure.Queries.Implementations;
+using AccessAppUser.Application.Mapping;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,6 +39,9 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Registro de AutoMapper
+builder.Services.AddApplicationMappers();
 
 // Registro de repositorio genérico
 builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
