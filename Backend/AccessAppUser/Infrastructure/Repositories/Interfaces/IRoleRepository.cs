@@ -1,7 +1,7 @@
 using AccessAppUser.Domain.Entities;
 using AccessAppUser.Infrastructure.Repositories.Interfaces;
 
-namespace AccessAppuser.Infrastruture.Repositories.Interfaces
+namespace AccessAppUser.Infrastructure.Repositories.Interfaces
 {
     public interface IRoleRepository : IBaseRepository<Role>
     {

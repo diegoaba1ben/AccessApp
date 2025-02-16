@@ -11,18 +11,18 @@ namespace AccessAppUser.Domain.Entities
     {
         [Key] // Clave primaria
         public Guid Id { get; private set; } // Se manejará en el Builder
-        public Guid UserId { get; private set; } // Id del usuario asociado
+        public Guid UserId { get; set; } // Id del usuario asociado
         public User User { get; private set; } = null!; // Relación de navegación hacia User
 
-        public string ResetToken { get; private set; } = string.Empty; // Token para resetear la contraseña
-        public DateTime TokenExpiration { get; private set; } // Fecha de expiración del token
+        public string ResetToken { get;  set; } = string.Empty; // Token para resetear la contraseña
+        public DateTime TokenExpiration { get; set; } // Fecha de expiración del token
         public bool IsCompleted { get; private set; } // Indica si el cambio de contraseña fue completado
-        public DateTime? CompletedAt { get; private set; } // Fecha de completado para auditoría
+        public DateTime? CompletedAt { get; set; } // Fecha de completado para auditoría
 
         /// <summary>
         /// Constructor privado para evitar instanciación directa.
         /// </summary>
-        private GesPass() { }
+        public GesPass() { }
 
         /// <summary>
         /// Método estático para inicializar el Builder.

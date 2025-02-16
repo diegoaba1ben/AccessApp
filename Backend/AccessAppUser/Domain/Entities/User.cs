@@ -12,7 +12,7 @@ namespace AccessAppUser.Domain.Entities
         public Guid Id { get; private set; }
         public string Name { get; private set; } = string.Empty;
         public string Email { get; private set; } = string.Empty;
-        public string Password { get; private set; } = string.Empty;
+        public string Password { get;  set; } = string.Empty;
         public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
         public static bool IsSystemInitialized { get; private set; } = false;
         public bool IsActive {get; private set;} = true;

@@ -7,7 +7,7 @@ using AccessAppUser.Domain.Entities;
 using AccessAppUser.Infrastructure.Persistence;
 using AccessAppUser.Infrastructure.Repositories.Base;
 using AccessAppUser.Infrastructure.Repositories.Interfaces;
-using AccessAppuser.Infrastruture.Repositories.Interfaces;
+
 
 namespace AccessAppUser.Infrastructure.Repositories.Implementations
 {

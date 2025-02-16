@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using DotNetEnv;
 using AccessAppUser.Infrastructure.Repositories.Base;
 using AccessAppUser.Infrastructure.Repositories.Implementations;
-using AccessAppuser.Infrastruture.Repositories.Interfaces;
 using AccessAppUser.Infrastructure.Queries.Interfaces;
 using AccessAppUser.Infrastructure.Queries.Implementations;
 using AccessAppUser.Application.Mapping;
