@@ -8,17 +8,17 @@ namespace AccessAppUser.Domain.Entities
     /// </summary>
     public class Area
     {
-        public Guid Id { get; private set; }
-        public string Name { get; private set; } = string.Empty;
-        public string Description { get; private set; } = string.Empty;
+        public Guid Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
 
-        public List<Role> Roles { get; private set; } = new();
-        public List<AreaProfile> AreaProfiles { get; private set; } = new();
+        public List<Role> Roles { get; set; } = new();
+        public List<AreaProfile> AreaProfiles { get; set; } = new();
 
         /// <summary>
-        /// Constructor privado para restringir la creación directa de instancias.
+        /// Constructor vacío para restringir la creación directa de instancias.
         /// </summary>
-        private Area() { }
+        public Area() { }
 
         /// <summary>
         /// Inicia la construcción de un nuevo objeto <see cref="Area"/>.

@@ -9,36 +9,36 @@ namespace AccessAppUser.Domain.Entities
     /// </summary>
     public class Role
     {
-        public Guid Id { get; private set; }
+        public Guid Id { get; set; }
 
-        public string Name { get; private set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
 
-        public string Description { get; private set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
 
         /// <summary>
         /// Lista de permisos asociados a este rol.
         /// </summary>
-        public List<Permission> Permissions { get; private set; } = new();
+        public List<Permission> Permissions { get; set; } = new();
 
         /// <summary>
         /// Lista de áreas asociados a este rol.
         /// </summary>
-        public List<Area> Areas { get; private set; } = new();
+        public List<Area> Areas { get; set; } = new();
 
         /// <summary>
         /// Lista de usuarios asociados a este rol.
         /// </summary>
-        public List<User> Users { get; private set; } = new();
+        public List<User> Users { get; set; } = new();
 
         /// <summary>
         /// Lista intermedia para gestionar la relación con Permisos
         /// </summary>
-        public List<RolePermission> RolePermissions { get; private set; } = new();
+        public List<RolePermission> RolePermissions { get; set; } = new();
 
         /// <summary>
-        /// Constructor privado para restringir la creación directa de instancias.
+        /// Constructor vacío para restringir la creación directa de instancias.
         /// </summary>
-        private Role() { }
+        public Role() { }
 
         /// <summary>
         /// Inicia la construcción de un nuevo objeto <see cref="Role"/>.

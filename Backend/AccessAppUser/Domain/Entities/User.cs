@@ -9,23 +9,23 @@ namespace AccessAppUser.Domain.Entities
     /// </summary>
     public class User
     {
-        public Guid Id { get; private set; }
-        public string Name { get; private set; } = string.Empty;
-        public string Email { get; private set; } = string.Empty;
+        public Guid Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
         public string Password { get;  set; } = string.Empty;
-        public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
-        public static bool IsSystemInitialized { get; private set; } = false;
-        public bool IsActive {get; private set;} = true;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public static bool IsSystemInitialized { get; set; } = false;
+        public bool IsActive {get; set;} = true;
 
         // Relaciones
-        public Profile Profile { get; private set; } = null!;
-        public List<Role> Roles { get; private set; } = new();
-        public GesPass GesPass { get; private set; } = null!; 
+        public Profile Profile { get; set; } = null!;
+        public List<Role> Roles { get; set; } = new();
+        public GesPass GesPass { get; set; } = null!; 
 
         /// <summary>
-        /// Constructor privado para evitar instanciación directa.
+        /// Constructor vacío para evitar instanciación directa.
         /// </summary>
-        private User() { }
+        public User() { }
 
         /// <summary>
         /// Método estático para inicializar el Builder.

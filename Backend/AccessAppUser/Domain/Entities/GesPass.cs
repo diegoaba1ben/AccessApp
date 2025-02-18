@@ -10,13 +10,13 @@ namespace AccessAppUser.Domain.Entities
     public class GesPass
     {
         [Key] // Clave primaria
-        public Guid Id { get; private set; } // Se manejará en el Builder
+        public Guid Id { get; set; } // Se manejará en el Builder
         public Guid UserId { get; set; } // Id del usuario asociado
-        public User User { get; private set; } = null!; // Relación de navegación hacia User
+        public User User { get; set; } = null!; // Relación de navegación hacia User
 
         public string ResetToken { get;  set; } = string.Empty; // Token para resetear la contraseña
         public DateTime TokenExpiration { get; set; } // Fecha de expiración del token
-        public bool IsCompleted { get; private set; } // Indica si el cambio de contraseña fue completado
+        public bool IsCompleted { get; set; } // Indica si el cambio de contraseña fue completado
         public DateTime? CompletedAt { get; set; } // Fecha de completado para auditoría
 
         /// <summary>

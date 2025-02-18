@@ -17,7 +17,8 @@ namespace AccessAppUser.Infrastructure.Persistence
         public DbSet<Area> Areas { get; set; } = null!;
         public DbSet<Profile> Profiles { get; set; } = null!;
         public DbSet<AreaProfile> AreaProfiles { get; set; } = null!;
-        public DbSet<GesPass> GesPasses { get; set; } = null!; // Agregado correctamente
+        public DbSet<GesPass> GesPasses { get; set; } = null!; 
+        public DbSet<RolePermission> RolePermissions { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -75,7 +76,7 @@ namespace AccessAppUser.Infrastructure.Persistence
                 .HasOne(rp => rp.Permission)
                 .WithMany(p => p.RolePermissions)
                 .HasForeignKey(rp => rp.PermissionId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Cascade);    
 
             // Relación uno a uno entre User y GesPass para cambio de contraseña
             modelBuilder.Entity<GesPass>()

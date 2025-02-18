@@ -9,18 +9,18 @@ namespace AccessAppUser.Domain.Entities
     /// </summary>
     public class Profile
     {
-        public Guid Id { get; private set; } // Se recibe desde User
-        public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
+        public Guid Id { get; set; } // Se recibe desde User
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         // Relaciones
-        public User User { get; private set; } = null!;
-        public List<AreaProfile> AreaProfiles { get; private set; } = new();
-        public Role Role { get; private set; } = null!;
+        public User User { get; set; } = null!;
+        public List<AreaProfile> AreaProfiles { get; set; } = new();
+        public Role Role { get; set; } = null!;
 
         /// <summary>
-        /// Constructor privado para evitar instanciación directa.
+        /// Constructor vacío para evitar instanciación directa.
         /// </summary>
-        private Profile() { }
+        public Profile() { }
 
         /// <summary>
         /// Método estático para inicializar el Builder.

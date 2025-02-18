@@ -10,22 +10,22 @@ namespace AccessAppUser.Domain.Entities
     /// </summary>
     public class Permission
     {
-        public Guid Id { get; private set; }
-        public string Name { get; private set; } = string.Empty;
-        public string Description { get; private set; } = string.Empty;
+        public Guid Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
 
         /// <summary>
         /// Lista de roles asociados a este permiso.
         /// </summary>
-        public List<Role> Roles { get; private set; } = new();
+        public List<Role> Roles { get; set; } = new();
 
         /// <summary>
         /// Lista intermedia para gestionar la relación con Roles.
         /// </summary>
         public List<RolePermission> RolePermissions {get; private set; } = new();
 
-        // Constructor privado para forzar el uso del builder
-        private Permission() { }
+        // Constructor vacío para forzar el uso del builder
+        public Permission() { }
 
         /// <summary>
         /// Método estático para inicializar el Builder.

@@ -1,7 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using AccessAppUser.Infrastructure.Repositories.Interfaces;
 using AccessAppUser.Infrastructure.DTOs;
 
@@ -55,11 +52,12 @@ namespace AccessAppUser.Application.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<GenericResponseDTO<T>>> Delete(Guid id)
         {
+            var entity = await _repository.GetByIdAsync(id);
             if (!await _repository.ExistsAsync(id))
                 return NotFound(GenericResponseDTO<T>.ErrorResponse(404, "Elemento no encontrado"));
 
             await _repository.DeleteAsync(id);
-            return Ok(GenericResponseDTO<T>.SuccessResponse(200, "Elemento eliminado correctamente"));
+            return Ok(GenericResponseDTO<T>.SuccessResponse(entity !, 200, "Elemento eliminado correctamente"));
         }
     }
 }
