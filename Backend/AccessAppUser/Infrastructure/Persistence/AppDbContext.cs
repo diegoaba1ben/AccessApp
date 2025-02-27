@@ -76,8 +76,11 @@ namespace AccessAppUser.Infrastructure.Persistence
                 .HasOne(rp => rp.Permission)
                 .WithMany(p => p.RolePermissions)
                 .HasForeignKey(rp => rp.PermissionId)
-                .OnDelete(DeleteBehavior.Cascade);    
+                .OnDelete(DeleteBehavior.Cascade);   
 
+            modelBuilder.Entity<Role>()
+                .Navigation(r => r.RolePermissions)
+                .AutoInclude();
             // Relación uno a uno entre User y GesPass para cambio de contraseña
             modelBuilder.Entity<GesPass>()
                 .HasKey(gp => gp.Id); 

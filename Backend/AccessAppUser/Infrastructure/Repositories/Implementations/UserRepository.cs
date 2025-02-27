@@ -18,8 +18,13 @@ namespace AccessAppUser.Infrastructure.Repositories.Implementations
         /// </summary>
         public async Task<User?> GetByEmailAsync(string email)
         {
-            return await _context.Users
+            var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower().Trim());
+
+            if (user == null)
+                Console.WriteLine($"No se encontró usuario con email: {email}");
+
+            return user;
         }
 
         /// <summary>

@@ -25,7 +25,27 @@ namespace AccessAppUser.Application.Controllers
         public async Task<ActionResult<IEnumerable<UserReadDTO>>> GetAllUsers()
         {
             var users = await _userRepository.GetAllAsync();
-            return Ok(_mapper.Map<IEnumerable<UserReadDTO>>(users));
+            Console.WriteLine($"Usuarios obtenidos de la BD: {users?.Count()}");
+
+            // Verifica si hay usuarios en la base de datos
+            if (users == null || !users.Any())
+            {
+                Console.WriteLine("No hay usuarios registradoes en BD");
+                return NotFound("No hay usuarios registrados");
+            }
+
+            var mappedUsers = _mapper.Map<IEnumerable<UserReadDTO>>(users);
+            Console.WriteLine($" Usuarios mapeados por AutoMapper: {mappedUsers?.Count()}");
+
+            // Verifica si el mapeo de AutoMapper falló
+            if (mappedUsers == null || !mappedUsers.Any())
+            {
+                Console.WriteLine("Error al mapear los usuarios");
+                return NotFound("Error al mapear los usuarios");
+            }
+
+            Console.WriteLine("Devuelve la lista de usuarios correctamente");
+            return Ok(mappedUsers);
         }
 
         [HttpGet("{id}")]
@@ -50,12 +70,36 @@ namespace AccessAppUser.Application.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<string>> LoginUser(UserLoginDTO userDto)
         {
-            var user = await _userRepository.GetByEmailAsync(userDto.Email);
-            if (user == null || user.Password != userDto.Password) // 🔥 Se debe mejorar con hashing
-                return Unauthorized("Credenciales incorrectas");
+            Console.WriteLine($" Intento de login: Email={userDto.Email}, Password={userDto.Password}");
 
-            return Ok("Inicio de sesión exitoso"); // 🔥 Luego se debe cambiar por JWT
+            var allUsers = await _userRepository.GetAllAsync();
+            Console.WriteLine(" Usuarios en la base de datos:");
+            foreach (var u in allUsers)
+            {
+                Console.WriteLine($"- {u.Email} | {u.Password}");
+            }
+
+            var user = await _userRepository.GetByEmailAsync(userDto.Email);
+
+            if (user == null)
+            {
+                Console.WriteLine(" Usuario no encontrado en la BD.");
+                return Unauthorized("Credenciales incorrectas");
+            }
+
+            Console.WriteLine($" Usuario encontrado: {user.Email}, Password almacenada: {user.Password}");
+
+            if (user.Password != userDto.Password) // Comparación directa 
+            {
+                Console.WriteLine($" Contraseña incorrecta: ingresada={userDto.Password}, almacenada={user.Password}");
+                return Unauthorized("Credenciales incorrectas");
+            }
+
+            Console.WriteLine(" Inicio de sesión exitoso");
+            return Ok("Inicio de sesión exitoso");
         }
+
+
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(Guid id, UserUpdateDTO userDto)

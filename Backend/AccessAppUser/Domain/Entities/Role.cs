@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using AccessAppUser.Domain.Builders;
 
 namespace AccessAppUser.Domain.Entities
@@ -77,18 +75,6 @@ namespace AccessAppUser.Domain.Entities
                 return this;
             }
 
-            public RoleBuilder AddPermission(Permission permission)
-            {
-                _role.Permissions.Add(permission);
-                return this;
-            }
-
-            public RoleBuilder AddPermissions(IEnumerable<Permission> permissions)
-            {
-                _role.Permissions.AddRange(permissions);
-                return this;
-            }
-
             /// <summary>
             /// Agrega una relación específica con un permiso utilizando la clase intermedia.
             /// </summary>
@@ -100,6 +86,22 @@ namespace AccessAppUser.Domain.Entities
                     .Build();
 
                 _role.RolePermissions.Add(rolePermission);
+                return this;
+            }
+
+
+            public RoleBuilder AddPermissions(IEnumerable<Permission> permissions)
+            {
+                foreach(var permission in permissions)
+                {
+                    var rolePermission = new RolePermission
+                    {
+                        Role = _role,
+                        Permission = permission
+                    };
+                    _role.RolePermissions.Add(rolePermission);
+                }
+                _role.Permissions.AddRange(permissions);
                 return this;
             }
 
