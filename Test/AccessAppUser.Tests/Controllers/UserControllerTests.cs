@@ -22,6 +22,8 @@ namespace AccessAppUser.Tests.Controllers
 
         public UserControllerTests()
         {
+            // Nombre único por prueba para evitar colisiones
+            var databaseName = Guid.NewGuid().ToString();
             var options = new DbContextOptionsBuilder<AppDbContext>()
                 .UseInMemoryDatabase(databaseName: "TestDatabase")
                 .Options;
@@ -88,7 +90,9 @@ namespace AccessAppUser.Tests.Controllers
         [Fact]
         public async Task GetAllUsers_ReturnsOk_WithUsers()
         {
+
             // Arrange
+            //Limpiar la base de datos
             _context.Users.RemoveRange(_context.Users);
             await _context.SaveChangesAsync();
 
