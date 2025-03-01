@@ -1,20 +1,26 @@
-# Usa la imagen base de .NET SDK para la compilación
+# Etapa 1: Construcción y publicación de la aplicación
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 
 WORKDIR /src
-COPY ["Backend/AccessAppUser/AccessAppUser.csproj", "AccessAppUser/"]
-RUN dotnet restore "AccessAppUser/AccessAppUser.csproj"
 
-COPY . .
-WORKDIR /src/Backend/AccessAppUser
-RUN dotnet build -c Release -o /app/build
+# Copiar solo el archivo de proyecto y restaurar dependencias
+COPY Backend/AccessAppUser/AccessAppUser.csproj AccessAppUser/
+WORKDIR /src/AccessAppUser
+RUN dotnet restore
 
-# Publicación de la aplicación
-FROM build AS publish
+# Copiar el código fuente y compilar la aplicación
+COPY Backend/AccessAppUser/ . 
 RUN dotnet publish -c Release -o /app/publish
 
-# Uso de la imagen de runtime para la ejecución
+# Etapa 2: Imagen final para ejecución
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+
 WORKDIR /app
-COPY --from=publish /app/publish .
+
+# Copiar los archivos publicados desde la etapa de compilación
+COPY --from=build /app/publish .
+
+# Establecer el punto de entrada
 ENTRYPOINT ["dotnet", "AccessAppUser.dll"]
+
+

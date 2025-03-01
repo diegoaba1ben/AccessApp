@@ -11,6 +11,15 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
 
+  redis:
+    image: redis:alpine
+    container_name: redis_accessapp
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --requirepass "tu_contraseña_segura"
+
   accessappuser:
     build:
       context: .
@@ -22,14 +31,18 @@ services:
       DB_USER: root
       DB_PASSWORD: root
       DB_NAME: AccessAppDb
+      REDIS_CONNECTION: redis_accessapp:6379  # Adición de Redis a las variables de entorno
     ports:
       - "5000:80"
     depends_on:
       - mysql
+      - redis # uso de Redis antes de iniciar el servicio
     volumes:
       - ./Backend/AccessAppUser:/app
 
 volumes:
   mysql_data:
+  redis_data:  # Volumen para Redis
+
 
 

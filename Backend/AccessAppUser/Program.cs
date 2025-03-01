@@ -2,6 +2,8 @@ using AccessAppUser.Infrastructure.Persistence;
 using AccessAppUser.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using DotNetEnv;
+using Microsoft.Extensions.Caching.StackExchangeRedis;
+using StackExchange.Redis;
 using AccessAppUser.Infrastructure.Repositories.Base;
 using AccessAppUser.Infrastructure.Repositories.Implementations;
 using AccessAppUser.Infrastructure.Queries.Interfaces;
@@ -24,6 +26,13 @@ var connectionString = $"Server={dbHost};Port={dbPort};User={dbUser};Password={d
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 405))));
+
+// Configuración de Redis en la inyección de dependencias
+var redisConnection = DotNetEnv.Env.GetString("REDIS_CONNECTION", 
+        Environment.GetEnvironmentVariable("REDIS_CONNECTION") ?? "localhost:6379");
+// Configuración de Redis con IConnectionMultiplexer
+builder.Services.AddSingleton<IConnectionMultiplexer>(provider => 
+        ConnectionMultiplexer.Connect(redisConnection));
 
 builder.Services.AddCors(options =>
 {
