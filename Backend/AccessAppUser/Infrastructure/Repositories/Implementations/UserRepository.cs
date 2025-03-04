@@ -6,6 +6,7 @@ using AccessAppUser.Domain.Entities;
 using AccessAppUser.Infrastructure.Persistence;
 using AccessAppUser.Infrastructure.Repositories.Base;
 using AccessAppUser.Infrastructure.Repositories.Interfaces;
+using AccessAppUser.Infrastructure.Cache.Interfaces;
 
 namespace AccessAppUser.Infrastructure.Repositories.Implementations
 {

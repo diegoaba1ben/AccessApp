@@ -9,6 +9,7 @@ using AccessAppUser.Infrastructure.Repositories.Interfaces;
 using AccessAppUser.Infrastructure.Repositories.Implementations;
 using AccessAppUser.Infrastructure.Persistence;
 using AccessAppUser.Infrastructure.DTOs.User;
+using AccessAppUser.Infrastructure.Cache.Interfaces;
 
 
 namespace AccessAppUser.Tests.Controllers
@@ -19,6 +20,7 @@ namespace AccessAppUser.Tests.Controllers
         private readonly UserRepository _repository;
         private readonly UserController _controller;
         private readonly IMapper _mapper;
+        private readonly Mock<IUserCacheService> _userCacheServiceMock = new Mock<IUserCacheService>();
 
         public UserControllerTests()
         {
@@ -39,7 +41,7 @@ namespace AccessAppUser.Tests.Controllers
             });
             _mapper = config.CreateMapper();
 
-            _controller = new UserController(_repository, _mapper);
+            _controller = new UserController(_repository, _mapper, _userCacheServiceMock.Object);
         }
 
         /// <summary>
@@ -109,7 +111,9 @@ namespace AccessAppUser.Tests.Controllers
             var result = await _controller.GetAllUsers();
 
             // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result.Result);
+            var okResult = result.Result as OkObjectResult;
+            Assert.NotNull(okResult);
+
             var response = Assert.IsAssignableFrom<IEnumerable<UserReadDTO>>(okResult.Value);
             Assert.Equal(2, response.Count());
         }
@@ -176,7 +180,7 @@ public async Task LoginUser_ReturnsOk_WhenCredentialsAreCorrect()
     await _context.SaveChangesAsync();
     Console.WriteLine(" Base de datos limpiada antes de la prueba.");
 
-    // 🔹 PASO 2: CREAR USUARIO
+    // PASO 2: CREAR USUARIO
     var user = new User
     {
         Id = Guid.NewGuid(),

@@ -9,6 +9,8 @@ using AccessAppUser.Infrastructure.Repositories.Implementations;
 using AccessAppUser.Infrastructure.Queries.Interfaces;
 using AccessAppUser.Infrastructure.Queries.Implementations;
 using AccessAppUser.Application.Mapping;
+using AccessAppUser.Infrastructure.Cache.Interfaces;
+using AccessAppUser.Infrastructure.Cache.Implementations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +35,9 @@ var redisConnection = DotNetEnv.Env.GetString("REDIS_CONNECTION",
 // Configuración de Redis con IConnectionMultiplexer
 builder.Services.AddSingleton<IConnectionMultiplexer>(provider => 
         ConnectionMultiplexer.Connect(redisConnection));
+// Registro de servicios de caché
+builder.Services.AddScoped<IUserCacheService, UserCacheService>();
+builder.Services.AddScoped<IPermissionCacheService, PermissionCacheService>();
 
 builder.Services.AddCors(options =>
 {
@@ -65,6 +70,8 @@ builder.Services.AddScoped<IGesPassRepository, GesPassRepository>();
 // Resgistro de consultas
 builder.Services.AddScoped<IProfileQueries, ProfileQueries>();
 builder.Services.AddScoped<IUserQueries, UserQueries>();
+
+
 
 var app = builder.Build();
 

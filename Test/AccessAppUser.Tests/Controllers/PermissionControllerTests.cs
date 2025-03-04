@@ -5,18 +5,21 @@ using AccessAppUser.Application.Controllers;
 using AccessAppUser.Domain.Entities;
 using AccessAppUser.Infrastructure.Repositories.Interfaces;
 using AccessAppUser.Infrastructure.DTOs;
+using AccessAppUser.Infrastructure.Cache.Interfaces; // Agrega esta línea
 
 namespace AccessAppUser.Tests.Controllers
 {
     public class PermissionControllerTests
     {
         private readonly Mock<IPermissionRepository> _mockRepo;
+        private readonly Mock<IPermissionCacheService> _mockCache; // Agrega esta línea
         private readonly PermissionController _controller;
 
         public PermissionControllerTests()
         {
             _mockRepo = new Mock<IPermissionRepository>();
-            _controller = new PermissionController(_mockRepo.Object);
+            _mockCache = new Mock<IPermissionCacheService>(); // Agrega esta línea
+            _controller = new PermissionController(_mockRepo.Object, _mockCache.Object); // Modifica esta línea
         }
 
         [Fact]
@@ -30,6 +33,7 @@ namespace AccessAppUser.Tests.Controllers
             };
 
             _mockRepo.Setup(repo => repo.GetAllAsync()).ReturnsAsync(permissions);
+            _mockCache.Setup(cache => cache.GetPermissionsByRoleIdAsync(It.IsAny<Guid>())).ReturnsAsync(default(IEnumerable<Permission>)); // Agrega esta línea
 
             // Act
             var result = await _controller.GetAll();
@@ -45,6 +49,7 @@ namespace AccessAppUser.Tests.Controllers
         {
             // Arrange
             _mockRepo.Setup(repo => repo.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(default(Permission));
+            _mockCache.Setup(cache => cache.GetPermissionAsync(It.IsAny<Guid>())).ReturnsAsync(default(Permission)); // Agrega esta línea
 
             // Act
             var result = await _controller.GetById(Guid.NewGuid());
@@ -60,6 +65,7 @@ namespace AccessAppUser.Tests.Controllers
             var permission = new Permission { Id = Guid.NewGuid(), Name = "Execute", Description = "Execute permission" };
 
             _mockRepo.Setup(repo => repo.AddAsync(It.IsAny<Permission>())).Returns(Task.CompletedTask);
+            _mockCache.Setup(cache => cache.SetPermissionAsync(It.IsAny<Permission>())).Returns(Task.CompletedTask); // Agrega esta línea
 
             // Act
             var result = await _controller.Create(permission);
