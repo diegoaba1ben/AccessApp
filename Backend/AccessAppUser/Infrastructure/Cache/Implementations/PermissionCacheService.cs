@@ -1,106 +1,135 @@
-using System.Text.Json;
-using StackExchange.Redis;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using AccessAppUser.Domain.Entities;
 using AccessAppUser.Infrastructure.Cache.Interfaces;
+using AccessAppUser.Infrastructure.Helpers;
 
 namespace AccessAppUser.Infrastructure.Cache.Implementations
 {
     /// <summary>
-    /// Implementación de la interfaz de caché para permisos
+    /// Servicio de caché especializado para entidades <see cref="Permission"/> individuales y agrupadas por rol.
+    /// Implementa el patrón CME delegando en servicios base genéricos.
     /// </summary>
     public class PermissionCacheService : IPermissionCacheService
     {
-        private readonly IConnectionMultiplexer _redis;
-        private readonly IDatabase _database;
+        private readonly IBaseCacheService<Permission> _singlePermissionCache;
+        private readonly IBaseCacheService<IEnumerable<Permission>> _permissionsByRoleCache;
+        private readonly ILogger<PermissionCacheService> _logger;
 
         /// <summary>
-        /// Constructor de la clase
+        /// Inicializa una nueva instancia del servicio <see cref="PermissionCacheService"/>.
         /// </summary>
-        public PermissionCacheService(IConnectionMultiplexer redis)
+        /// <param name="singlePermissionCache">Servicio de caché para entidad <see cref="Permission"/>.</param>
+        /// <param name="permissionsByRoleCache">Servicio de caché para colecciones de permisos.</param>
+        /// <param name="logger">Logger para trazabilidad y manejo de errores.</param>
+        public PermissionCacheService(
+            IBaseCacheService<Permission> singlePermissionCache,
+            IBaseCacheService<IEnumerable<Permission>> permissionsByRoleCache,
+            ILogger<PermissionCacheService> logger)
         {
-            _redis = redis;
-            _database = redis.GetDatabase();
+            _singlePermissionCache = singlePermissionCache;
+            _permissionsByRoleCache = permissionsByRoleCache;
+            _logger = logger;
         }
 
-        /// <summary>
-        /// Obtiene un permiso de la caché por su ID
-        /// </summary>
-        /// <param name="id">ID del permiso</param>
-        /// <returns>Permiso</returns>
         public async Task<Permission?> GetPermissionAsync(Guid id)
         {
-            var value = await _database.StringGetAsync($"permission:{id}");
-            if (value.IsNullOrEmpty)
+            var key = CacheKeyFormatter.GetKey<Permission>(id);
+            try
             {
-                return null;
+                var permission = await _singlePermissionCache.GetAsync(key);
+                if (permission == null)
+                {
+                    _logger.LogInformation("Permiso con clave {Key} no encontrado en caché.", key);
+                }
+                return permission;
             }
-            if (value.HasValue && !string.IsNullOrEmpty(value)) // chequeo de nulidad
+            catch (Exception ex)
             {
-                return JsonSerializer.Deserialize<Permission>(value!);
+                _logger.LogError(ex, "Error al recuperar permiso con clave: {Key}.", key);
+                throw;
             }
-            return null;
         }
 
-        /// <summary>
-        /// Establece el permiso para almacenar en la caché
-        /// </summary>
-        /// <param name="permission">Permiso a almacenar en la caché</param>
         public async Task SetPermissionAsync(Permission permission)
         {
-            var serializedPermission = JsonSerializer.Serialize(permission);
-            await _database.StringSetAsync($"permission:{permission.Id}", serializedPermission);
+            var key = CacheKeyFormatter.GetKey<Permission>(permission.Id);
+            try
+            {
+                await _singlePermissionCache.SetAsync(key, permission, TimeSpan.FromMinutes(30));
+                _logger.LogInformation("Permiso almacenado con clave {Key}.", key);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al almacenar permiso con clave: {Key}.", key);
+                throw;
+            }
         }
 
-        /// <summary>
-        /// Elimina un permiso de la caché por su ID
-        /// </summary>
-        /// <param name="id">ID del permiso a eliminar</param>
         public async Task RemovePermissionAsync(Guid id)
         {
-            await _database.KeyDeleteAsync($"permission:{id}");
+            var key = CacheKeyFormatter.GetKey<Permission>(id);
+            try
+            {
+                await _singlePermissionCache.RemoveAsync(key);
+                _logger.LogInformation("Permiso eliminado de la caché con clave: {Key}.", key);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al eliminar permiso con clave: {Key}.", key);
+                throw;
+            }
         }
 
-        /// <summary>
-        /// Obtiene permisos de la caché por ID de rol
-        /// </summary>
-        /// <param name="roleId">ID del rol</param>
         public async Task<IEnumerable<Permission>?> GetPermissionsByRoleIdAsync(Guid roleId)
         {
-            var value = await _database.StringGetAsync($"permissions:role:{roleId}");
-            if (value.IsNullOrEmpty)
+            var key = $"role:{roleId.ToString("N")}:permissions";
+            try
             {
-                return null;
-            }
-            if (value.HasValue && !string.IsNullOrEmpty(value)) // chequeo de nulidad
-            {
-                var permission = JsonSerializer.Deserialize<Permission>(value!);
-                if (permission != null)
+                var permissions = await _permissionsByRoleCache.GetAsync(key);
+                if (permissions == null)
                 {
-                    return new List<Permission> { permission };
+                    _logger.LogWarning("Permisos para el rol con clave {Key} no encontrados.", key);
                 }
-                return null;
+                return permissions;
             }
-            return null;
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al recuperar permisos de rol con clave: {Key}.", key);
+                throw;
+            }
         }
 
-        /// <summary>
-        /// Establece permisos en la caché por ID de rol
-        /// </summary>
-        /// <param name="roleId">ID del rol</param>
-        /// <param name="permissions">Lista de permisos a almacenar en la caché</param>
         public async Task SetPermissionsByRoleIdAsync(Guid roleId, IEnumerable<Permission> permissions)
         {
-            var serializedPermissions = JsonSerializer.Serialize(permissions);
-            await _database.StringSetAsync($"permissions:role:{roleId}", serializedPermissions);
+            var key = $"role:{roleId.ToString("N")}:permissions";
+            try
+            {
+                await _permissionsByRoleCache.SetAsync(key, permissions, TimeSpan.FromMinutes(30));
+                _logger.LogInformation("Permisos para rol almacenados con clave: {Key}.", key);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al almacenar permisos de rol con clave: {Key}.", key);
+                throw;
+            }
         }
 
-        /// <summary>
-        /// Elimina permisos de la caché por ID de rol
-        /// </summary>
-        /// <param name="roleId">ID del rol</param>
         public async Task RemovePermissionsByRoleIdAsync(Guid roleId)
         {
-            await _database.KeyDeleteAsync($"permissions:role:{roleId}");
+            var key = $"role:{roleId.ToString("N")}:permissions";
+            try
+            {
+                await _permissionsByRoleCache.RemoveAsync(key);
+                _logger.LogInformation("Permisos de rol eliminados con clave: {Key}.", key);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al eliminar permisos de rol con clave: {Key}.", key);
+                throw;
+            }
         }
     }
 }

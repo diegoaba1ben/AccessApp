@@ -11,6 +11,7 @@ using AccessAppUser.Infrastructure.Queries.Implementations;
 using AccessAppUser.Application.Mapping;
 using AccessAppUser.Infrastructure.Cache.Interfaces;
 using AccessAppUser.Infrastructure.Cache.Implementations;
+using AccessApp.Infrastructure.Cache.Implementations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,7 +38,11 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(provider =>
         ConnectionMultiplexer.Connect(redisConnection));
 // Registro de servicios de caché
 builder.Services.AddScoped<IUserCacheService, UserCacheService>();
+builder.Services.AddScoped(typeof(IBaseCacheService<>), typeof(BaseCacheservice<>));
+builder.Services.AddScoped<IAreaCacheService, AreaCacheService>();
+builder.Services.AddScoped<IRoleCacheService, RoleCacheService>();
 builder.Services.AddScoped<IPermissionCacheService, PermissionCacheService>();
+builder.Services.AddScoped<IGesPassCacheService, GesPassCacheService>();
 
 builder.Services.AddCors(options =>
 {

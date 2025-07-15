@@ -3,7 +3,7 @@ using System;
 namespace AccessAppUser.Infrastructure.Helpers
 {
     /// <summary>
-    /// Proveedor de GUIDs para la aplicación.
+    /// Proveedor de GUIDs para la aplicaciÃ³n.
     /// </summary>
     public static class GuidProvider
     {

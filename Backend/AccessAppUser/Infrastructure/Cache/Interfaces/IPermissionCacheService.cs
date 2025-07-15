@@ -1,45 +1,53 @@
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using AccessAppUser.Domain.Entities;
 
 namespace AccessAppUser.Infrastructure.Cache.Interfaces
 {
+    /// <summary>
+    /// Contrato especializado para la gestión en caché de entidades <see cref="Permission"/>,
+    /// tanto individuales como agrupadas por rol.
+    /// </summary>
     public interface IPermissionCacheService
     {
         /// <summary>
-        /// Obtiene un permiso de la caché por us ID
+        /// Recupera un permiso individual desde la caché utilizando su identificador.
         /// </summary>
-        /// <param name="id"> ID del permiso </param>
-        /// <returns> Permiso </returns>
+        /// <param name="id">Identificador único del permiso.</param>
+        /// <returns>Instancia <see cref="Permission"/> si se encuentra en caché; de lo contrario, <c>null</c>.</returns>
         Task<Permission?> GetPermissionAsync(Guid id);
 
         /// <summary>
-        /// Establece un permiso en la caché
+        /// Almacena un permiso en caché con clave derivada del identificador.
         /// </summary>
-        /// <param name="Pemission"> Permiso a almacenar en la caché </param>
+        /// <param name="permission">Entidad <see cref="Permission"/> a almacenar.</param>
         Task SetPermissionAsync(Permission permission);
 
         /// <summary>
-        /// Elimina un permiso de la caché por ID
+        /// Elimina un permiso de la caché por su identificador.
         /// </summary>
-        /// <parama name="id"> ID del permiso a eliminar </param>
+        /// <param name="id">Identificador del permiso a eliminar.</param>
         Task RemovePermissionAsync(Guid id);
 
         /// <summary>
-        /// Obtiene permisos de la caché por ID de rol
+        /// Recupera desde la caché los permisos asociados a un rol.
         /// </summary>
-        /// <param name="roleId"> ID del rol </param>
-        /// <returns> Lista de permisos si se encuentran en la caché, o nulo si no </returns>
+        /// <param name="roleId">Identificador único del rol.</param>
+        /// <returns>Colección de <see cref="Permission"/> si se encuentra; de lo contrario, <c>null</c>.</returns>
         Task<IEnumerable<Permission>?> GetPermissionsByRoleIdAsync(Guid roleId);
 
         /// <summary>
-        /// Establece permisos en la caché por ID de rol
+        /// Almacena en caché una colección de permisos vinculados a un rol específico.
         /// </summary>
-        /// <param name="permissions">Lista de permisos a almacenar en la caché</param>
+        /// <param name="roleId">Identificador del rol.</param>
+        /// <param name="permissions">Colección de permisos a almacenar.</param>
         Task SetPermissionsByRoleIdAsync(Guid roleId, IEnumerable<Permission> permissions);
 
         /// <summary>
-        /// Elimina permisos de la caché por Id de rol
+        /// Elimina de la caché todos los permisos relacionados a un rol.
         /// </summary>
-        /// <parama name="roleId"> ID del rol </param>
+        /// <param name="roleId">Identificador único del rol.</param>
         Task RemovePermissionsByRoleIdAsync(Guid roleId);
     }
 }

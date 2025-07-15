@@ -10,5 +10,9 @@ namespace AccessAppUser.Infrastructure.DTOs.Permission
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
+        /// <summary>
+        /// Lista de roles asociados a este permiso.
+        /// /// </summary>
+        public List<string> Roles { get; set; } = new List<string>();
     }
 }

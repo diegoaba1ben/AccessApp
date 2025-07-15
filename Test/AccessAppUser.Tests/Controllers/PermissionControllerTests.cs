@@ -12,7 +12,7 @@ namespace AccessAppUser.Tests.Controllers
     public class PermissionControllerTests
     {
         private readonly Mock<IPermissionRepository> _mockRepo;
-        private readonly Mock<IPermissionCacheService> _mockCache; // Agrega esta línea
+        private readonly Mock<IPermissionCacheService> _mockCache; 
         private readonly PermissionController _controller;
 
         public PermissionControllerTests()
@@ -77,4 +77,3 @@ namespace AccessAppUser.Tests.Controllers
         }
     }
 }
-
