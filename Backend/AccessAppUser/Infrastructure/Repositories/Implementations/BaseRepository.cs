@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using AccessAppUser.Infrastructure.Persistence;
+using AccessAppUser.Infrastructure.Exceptions;
 
 namespace AccessAppUser.Infrastructure.Repositories.Base
 {
@@ -37,14 +38,14 @@ namespace AccessAppUser.Infrastructure.Repositories.Base
         {
             return await _dbSet.ToListAsync();
         }
-        
+
         /// <summary>
         /// Agrega una nueva entidad al contexto y guarda los cambios.
         /// </summary>
         /// <param name="entity">Entidad a agregar</param>
         public async Task AddAsync(T entity)
         {
-           if(entity == null)
+            if (entity == null)
             {
                 throw new ArgumentNullException(nameof(entity));
             }
@@ -57,7 +58,7 @@ namespace AccessAppUser.Infrastructure.Repositories.Base
         /// <param name="entity">Entidad a actualizar</param>
         public async Task UpdateAsync(T entity)
         {
-            if(entity == null)
+            if (entity == null)
             {
                 throw new ArgumentNullException(nameof(entity));
             }
@@ -70,13 +71,19 @@ namespace AccessAppUser.Infrastructure.Repositories.Base
         /// <param name="entity">Entidad a eliminar</param>
         public async Task DeleteAsync(Guid id)
         {
+            if (id == Guid.Empty)
+            {
+                throw new ArgumentException($"Invalid id for entity type {typeof(T).Name}");
+            }
+
             var entity = await _dbSet.FindAsync(id);
-            if(entity !=null)
+            if (entity != null)
             {
                 _dbSet.Remove(entity);
                 await _context.SaveChangesAsync();
             }
         }
+
         /// <summary>
         /// Verifica si una entidad con el Id especificado existe en el contexto.
         /// </summary>
