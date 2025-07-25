@@ -7,6 +7,8 @@ using AccessAppUser.Domain.Entities;
 using AccessAppUser.Infrastructure.Persistence;
 using AccessAppUser.Infrastructure.Repositories.Base;
 using AccessAppUser.Infrastructure.Repositories.Interfaces;
+using AccessAppUser.Infrastructure.Exceptions;
+
 
 namespace AccessAppUser.Infrastructure.Repositories.Implementations
 {
@@ -22,7 +24,10 @@ namespace AccessAppUser.Infrastructure.Repositories.Implementations
             var role = await _context.Roles
                 .Include(r => r.Permissions)
                 .FirstOrDefaultAsync(r => r.Id == roleId);
-
+            if (role is null)
+            {
+                throw new RoleNotFoundException(roleId);
+            }
             return role?.Permissions ?? new List<Permission>();
         }
 
@@ -34,6 +39,10 @@ namespace AccessAppUser.Infrastructure.Repositories.Implementations
             var role = await _context.Roles
                 .Include(r => r.Permissions)
                 .FirstOrDefaultAsync(r => r.Name == roleName.Trim());
+            if (role is null)
+            {
+                throw new RoleNameNotFoundException(roleName);
+            }
 
             return role?.Permissions ?? new List<Permission>();
         }

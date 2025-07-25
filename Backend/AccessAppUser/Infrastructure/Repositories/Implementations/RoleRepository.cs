@@ -3,6 +3,8 @@ using AccessAppUser.Domain.Entities;
 using AccessAppUser.Infrastructure.Persistence;
 using AccessAppUser.Infrastructure.Repositories.Base;
 using AccessAppUser.Infrastructure.Repositories.Interfaces;
+using AccessAppUser.Infrastructure.Exceptions;
+
 
 namespace AccessAppUser.Infrastructure.Repositories.Implementations
 {
@@ -28,17 +30,29 @@ namespace AccessAppUser.Infrastructure.Repositories.Implementations
         /// </summary>
         public async Task<bool> AssignPermissionToRoleAsync(Guid roleId, Guid permissionId)
         {
+            if (roleId == Guid.Empty)
+                throw new InvalidIdException(nameof(roleId), typeof(Role));
+
+            if (permissionId == Guid.Empty)
+                throw new InvalidIdException(nameof(permissionId), typeof(Permission));
+
             var role = await _context.Roles.FindAsync(roleId);
+            if (role is null)
+                throw new RoleNotFoundException(roleId);
+
             var permission = await _context.Permissions.FindAsync(permissionId);
+            if (permission is null)
+                throw new PermissionNotFoundException(permissionId);
 
-            if (role == null || permission == null)
-                return false;
+            _context.RolePermissions.Add(new RolePermission
+            {
+                RoleId = roleId,
+                PermissionId = permissionId
+            });
 
-            _context.RolePermissions.Add(new RolePermission { RoleId = roleId, PermissionId = permissionId });
             await _context.SaveChangesAsync();
             return true;
         }
-
         /// <summary>
         /// Elimina un permiso de un rol.
         /// </summary>
@@ -84,7 +98,7 @@ namespace AccessAppUser.Infrastructure.Repositories.Implementations
         /// </summary>
         public async Task<IEnumerable<Role>> GetRolesWithPermissionsAsync()
         {
-            return await _context.Roles 
+            return await _context.Roles
                 .Include(r => r.RolePermissions)
                 .ThenInclude(rp => rp.Permission)
                 .ToListAsync();

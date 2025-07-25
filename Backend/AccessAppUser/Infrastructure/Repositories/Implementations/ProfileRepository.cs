@@ -6,6 +6,7 @@ using AccessAppUser.Domain.Entities;
 using AccessAppUser.Infrastructure.Persistence;
 using AccessAppUser.Infrastructure.Repositories.Base;
 using AccessAppUser.Infrastructure.Repositories.Interfaces;
+using AccessAppUser.Infrastructure.Exceptions;
 
 namespace AccessAppUser.Infrastructure.Repositories.Implementations
 {
@@ -18,9 +19,19 @@ namespace AccessAppUser.Infrastructure.Repositories.Implementations
         /// </summary>
         public async Task<Profile?> GetProfileWithUserAsync(Guid profileId)
         {
-            return await _context.Profiles
+            if (profileId == Guid.Empty)
+                throw new InvalidIdException(nameof(profileId), typeof(Profile));
+
+            var profile = await _context.Profiles
                 .Include(p => p.User)
                 .FirstOrDefaultAsync(p => p.Id == profileId);
+
+            if (profile is null)
+                throw new ProfileNotFoundException(profileId);
+
+            return profile;
+
+
         }
 
         /// <summary>
